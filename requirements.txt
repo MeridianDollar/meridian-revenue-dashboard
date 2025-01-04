@@ -1,0 +1,7 @@
+matplotlib==3.7.2
+numpy==1.25.1
+pandas==2.2.3
+Requests==2.32.3
+streamlit==1.41.1
+web3==5.25.0
+yfinance==0.2.51
