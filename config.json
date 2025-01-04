@@ -1,0 +1,45 @@
+{
+    "telos": {
+        "incentives_controller": {
+            "v1": {
+                "address": "0x406F044A5aBF071db08E4482c3487331Cf284ADc",
+                "default_start_block": 322098983,
+                "chunk_size": 100000
+            },
+            "v2": {
+                "address": "0xdD55c9200a8CBA7A1d62F440660f1EAE16d02e20",
+                "default_start_block": 343652901,
+                "chunk_size": 100000
+            }
+        },
+        "rpcs": [
+            "https://rpc.telos.net",
+            "https://rpc.ankr.com/telos"
+        ]
+    },
+    "fuse": {
+        "incentives_controller": {
+            "address": "0xd2Fa60C6fab6EdF77E78A0908066d04a5F5EB1E0",
+            "default_start_block": 28898429,
+            "chunk_size": 10000
+        },
+        "rpcs": [
+            "https://explorer-node.fuse.io/",
+            "https://fuse.drpc.org",
+            "https://fuse-pokt.nodies.app",
+            "https://fuse.liquify.com",
+            "https://rpc.fuse.io"
+        ]
+    },
+    "meter": {
+        "incentives_controller": {
+            "address": "0xBAE27c0F27A7bff3f391A19E0dE2d241E2497a09",
+            "default_start_block": 51446979,
+            "chunk_size": 10000
+        },
+        "rpcs": [
+            "https://rpc.meter.io",
+            "https://meter.blockpi.network/v1/rpc/public"
+        ]
+    }
+}
