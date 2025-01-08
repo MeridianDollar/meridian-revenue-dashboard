@@ -67,12 +67,6 @@ def find_closest_price(block_date, historical_prices_df):
     idx = historical_prices_df["time_diff"].idxmin()
     return float(historical_prices_df.loc[idx, "price"])
 
-def update_staking_fees(staking_fees):
-    """
-    Stub to store or update global fee data in a JSON file.
-    """
-    with open("staking_fees.json", "w") as f:
-        json.dump(staking_fees, f, indent=2)
 
 def update_staking_fees_data(network, staking_fees, amount_usd, fee_type):
     """
@@ -90,8 +84,6 @@ def update_staking_fees_data(network, staking_fees, amount_usd, fee_type):
         staking_fees[network] = {}
     staking_fees[network][fee_type] = new_value
 
-    # Optionally store in JSON
-    update_staking_fees(staking_fees)
 
 ###############################################################################
 # CONFIGURATION
@@ -508,3 +500,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    

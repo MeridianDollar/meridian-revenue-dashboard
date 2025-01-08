@@ -24,31 +24,31 @@ WEI = 10**18
 # Example config. Adjust the "tokenAddress" and "mintContract" per network,
 # as well as default_start_block, block_increment, etc.
 CONFIG = {
-    "fuse": {
-        "rpc": "https://rpc.fuse.io",
-        "default_start_block": 27998541,
-        "block_increment": 30000,
+    "taraxa": {
+        "rpc": "https://rpc.mainnet.taraxa.io",
+        "default_start_block": 13309623,
+        "block_increment": 25000,
         "contracts": {
-            "tokenAddress": "0xYourTokenUSDOnFuse",     # The ERC-20 token contract
-            "mintContract": "0xContractThatReceivesMints"  # e.g. a staking or vault contract
+            "tokenAddress": "0xC26B690773828999c2612549CC815d1F252EA15e",     # The ERC-20 token contract
+            "mintContract": "0xf6Ad62cCa52a5d3c5d567303347E013c2dadec92"  # e.g. a staking or vault contract
         }
     },
     "base": {
         "rpc": "https://base.meowrpc.com",
-        "default_start_block": 2096194,
+        "default_start_block": 2096405,
         "block_increment": 30000,
         "contracts": {
-            "tokenAddress": "0xYourTokenUSDOnBase",
-            "mintContract": "0xContractThatReceivesMints"
+            "tokenAddress": "0x5e06eA564efcB3158a85dBF0B9E017cb003ff56f",
+            "mintContract": "0xfCcD02F7a964DE33032cb57746DC3B5F9319eaB7"
         }
     },
     "telos": {
         "rpc": "https://rpc.telos.net",
-        "default_start_block": 311768153,
+        "default_start_block": 311768251,
         "block_increment": 100000,
         "contracts": {
-            "tokenAddress": "0xYourTokenUSDOnTelos",
-            "mintContract": "0xContractThatReceivesMints"
+            "tokenAddress": "0x8f7D64ea96D729EF24a0F30b4526D47b80d877B9",
+            "mintContract": "0xE07D7f1C1153bCebc4f772C48A8A8eed1283ecCE"
         }
     }
 }
@@ -62,6 +62,8 @@ CSV_FOLDER = "csv/mint_fees"
 
 def setup_web3(rpc_url):
     w3 = Web3(Web3.HTTPProvider(rpc_url))
+    if rpc_url == "https://rpc.mainnet.taraxa.io":
+        return w3
     if not w3.isConnected():
         raise ConnectionError(f"Could not connect to {rpc_url}")
     return w3
@@ -147,22 +149,16 @@ def fetch_mint_logs(w3, token_address, from_block, to_block, to_contract):
         return []
 
 def parse_mint_logs(w3, logs):
-    """
-    Sum up the minted amounts from the logs. 
-    Since the token is presumably a USD stable (or a token representing USD),
-    we treat 'value' directly as dollars. Adjust if needed.
-    """
-    minted_sum = 0.0
+    minted_sum = 0.0  # float
     for log in logs:
         try:
-            # The minted amount is stored in log['data'] as a 256-bit integer.
-            # For an 18-decimal ERC-20, we'd parse it with fromWei(..., "ether").
-            # If your token decimals differ, adjust accordingly.
             value_int = int(log['data'], 16)
-            minted_sum += w3.fromWei(value_int, 'ether')
+            # Convert directly to float:
+            minted_sum += float(w3.fromWei(value_int, 'ether'))
         except Exception as e:
             print(f"Error parsing mint log: {e}")
     return minted_sum
+
 
 def process_mint_fees_network(network, netconf):
     """

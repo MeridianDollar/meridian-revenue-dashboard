@@ -27,9 +27,7 @@ def save_to_csv(filename, data):
 if __name__ == "__main__":
     # Define parameters for each network
     networks = [
-        {"coin_id": "telos", "filename": "telos_historical_prices.csv"},
-        {"coin_id": "fuse-network-token", "filename": "fuse_historical_prices.csv"},
-        {"coin_id": "meter", "filename": "meter_historical_prices.csv"}
+        {"coin_id": "usd-coin", "filename": "usd-coin_historical_prices.csv"},
     ]
     currency = "usd"  # Currency for prices
     to_date = datetime.now()

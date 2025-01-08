@@ -143,13 +143,24 @@ def find_closest_price(block_date, historical_prices_df):
 ###############################################################################
 
 CONFIG = {
+        "taraxa": {
+        "rpc": "https://rpc.mainnet.taraxa.io",
+        "default_start_block": 13309556,
+        "block_increment": 25000,
+        "contracts": {
+            "troveManager": "0xd2ff761A55b17a4Ff811B262403C796668Ff610D",
+            "collateral_coin_id": "taraxa",
+            "csv_id": "taraxa"
+        }
+    },
     "fuse": {
         "rpc": "https://rpc.fuse.io",
         "default_start_block": 27998541,
         "block_increment": 30000,
         "contracts": {
             "troveManager": "0xCD413fC3347cE295fc5DB3099839a203d8c2E6D9",
-            "collateral_coin_id": "fuse-network-token"
+            "collateral_coin_id": "fuse-network-token",
+            "csv_id": "fuse"
         }
     },
     "base": {
@@ -158,7 +169,8 @@ CONFIG = {
         "block_increment": 30000,
         "contracts": {
             "troveManager": "0x56a901FdF67FC52e7012eb08Cfb47308490A982C",
-            "collateral_coin_id": "ethereum"
+            "collateral_coin_id": "ethereum",
+            "csv_id": "ethereum"
         }
     },
     "telos": {
@@ -167,7 +179,8 @@ CONFIG = {
         "block_increment": 100000,
         "contracts": {
             "troveManager": "0xb1F92104E1Ad5Ed84592666EfB1eB52b946E6e68",
-            "collateral_coin_id": "telos"
+            "collateral_coin_id": "telos",
+            "csv_id": "telos"
         }
     }
 }
@@ -180,6 +193,8 @@ CSV_FOLDER = "csv/redemption_fees"
 
 def setup_web3(rpc_url):
     w3 = Web3(Web3.HTTPProvider(rpc_url))
+    if rpc_url == "https://rpc.mainnet.taraxa.io":
+        return w3
     if not w3.isConnected():
         raise ConnectionError(f"Could not connect to {rpc_url}")
     return w3
@@ -373,6 +388,7 @@ def calculate_new_usd_rows(new_df, historical_prices_df, starting_eth, starting_
     new_df["usd_redemptions"] = usd_list
     return new_df
 
+
 def process_redemptions_usd(network, netconf):
     """
     Phase 2: Convert raw redemptions (ETH) → USD using historical prices.
@@ -383,10 +399,11 @@ def process_redemptions_usd(network, netconf):
 
     # 2) Ensure we have a historical prices CSV for the underlying collateral
     coin_id = netconf["contracts"]["collateral_coin_id"]
-    hist_prices_csv = f"csv/historical_prices/{coin_id}_historical_prices.csv"
+    csv_id = netconf["contracts"]["csv_id"]
+    hist_prices_csv = f"csv/historical_prices/{csv_id}_historical_prices.csv"
 
     # If no CSV yet, auto-generate from CoinGecko or pinned logic
-    maybe_generate_historical_prices_csv(coin_id, "usd", hist_prices_csv)
+    maybe_generate_or_update_historical_prices_csv(coin_id, "usd", hist_prices_csv)
 
     # Now load that CSV into a DataFrame
     historical_prices_df = load_historical_prices(hist_prices_csv)
