@@ -35,6 +35,36 @@ ERC20_ABI = [
     },
 ]
 
+
+
+
+def stitch_files():
+
+    df1 = pd.read_csv("csv/staking_fees/telos_staking_fees_with_usd.csv")
+    df2 = pd.read_csv("csv/staking_fees/telosV2_staking_fees_with_usd.csv")
+
+    # 1) Sort each by date_time
+    df1["date_time"] = pd.to_datetime(df1["date_time"])
+    df2["date_time"] = pd.to_datetime(df2["date_time"])
+    df1.sort_values("date_time", inplace=True)
+    df2.sort_values("date_time", inplace=True)
+
+    # (Optional) remove overlap:
+    last_date_df1 = df1["date_time"].max()
+    df2 = df2[df2["date_time"] > last_date_df1]
+
+    # 2) Shift second file’s cumulative column
+    last_cumulative = df1["usd_rewards"].iloc[-1]
+    df2["usd_rewards"] = df2["usd_rewards"] + last_cumulative
+
+    # 3) Merge & re‐sort
+    combined = pd.concat([df1, df2], ignore_index=True)
+    combined.sort_values("date_time", inplace=True)
+
+    # 4) Save
+    combined.to_csv("stitched_file.csv", index=False)
+
+
 # In a real setup, these come from helper.py or a separate file
 def fetch_historical_prices(coin_id, currency, from_date, to_date):
     """
@@ -90,40 +120,16 @@ def update_staking_fees_data(network, staking_fees, amount_usd, fee_type):
 ###############################################################################
 
 CONFIG = {
-    "fuse": {
-        "rpc": "https://rpc.fuse.io",
-        "default_start_block": 27998726,
-        "block_increment": 30000,
-        "contracts": {
-            "staking_keeper": "0x873415F6633A0C42b8717bC898354638F52b13f3",
-            "staking_pool":    "0xb513fE4E2a3ed79bE6a7a936C7837f0294AFFEAd",
-            "staking_reward_tokens": [
-                "0x0BE9e53fd7EDaC9F859882AfdDa116645287C629",
-                "0x4447863cddABbF2c3dAC826f042e03c91927A196"
-            ]
-        }
-    },
-    "meter": {
-        "rpc": "https://rpc.meter.io",
-        "default_start_block": 51786437,
-        "block_increment": 30000,
-        "contracts": {
-            "staking_keeper": "0x873415F6633A0C42b8717bC898354638F52b13f3",
-            "staking_pool":    "0xe50882F137e0E00C06E62634f8A2b25c9FC64971",
-            "staking_reward_tokens": [
-                "0x228ebBeE999c6a7ad74A6130E81b12f9Fe237Ba3"
-            ]
-        }
-    },
-    "telos": {
+    "telosV2": {
         "rpc": "https://rpc.telos.net",
-        "default_start_block": 322118921,
+        "default_start_block": 365471049,
         "block_increment": 100000,
         "contracts": {
             "staking_keeper": "0x873415F6633A0C42b8717bC898354638F52b13f3",
-            "staking_pool":    "0xd056EFf05b69B3C612bf0e7e58b3D44d6CCCC731",
+            "staking_pool":    "0x493A60387522a7573082f0f27B98d78Ca8635e43",
             "staking_reward_tokens": [
-                "0x8f7D64ea96D729EF24a0F30b4526D47b80d877B9"
+                "0x8f7D64ea96D729EF24a0F30b4526D47b80d877B9",
+                "0xD102cE6A4dB07D247fcc28F366A623Df0938CA9E"
             ]
         }
     }
@@ -495,6 +501,8 @@ def main():
     print("\n=== PHASE 2: Convert to USD with partial post-processing ===")
     for network in CONFIG.keys():
         process_staking_fees_usd(network)
+        
+    stitch_files()
 
     print("\nAll done!")
 

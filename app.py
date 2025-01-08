@@ -78,7 +78,7 @@ lending_csv_files = {
 staking_csv_files = {
     "Fuse": "csv/staking_fees/fuse_staking_fees_with_usd.csv",
     "Meter": "csv/staking_fees/meter_staking_fees_with_usd.csv",
-    "Telos": "csv/staking_fees/telos_staking_fees_with_usd.csv"
+    "Telos": "csv/staking_fees/telos_all_staking_fees_with_usd.csv"
 }
 
 mint_fees_csv_files = {
