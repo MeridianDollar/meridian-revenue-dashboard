@@ -136,7 +136,7 @@ if selected_category == "Lending Incentives":
             if "reward" in data.columns:
                 data["reward"] = data["reward"] / 10**18  # Adjust based on your data
             plot_rewards_vs_date(data, network_name, selected_category)
-            st.write("Data Preview (Scrollable and Full Width):")
+            st.write("Data Preview:")
             st.dataframe(data, height=400, use_container_width=True)
         except FileNotFoundError:
             st.error(f"CSV file for {network_name} not found at {csv_file_path}. Please ensure the file exists.")
@@ -160,7 +160,7 @@ elif selected_category == "Mint Incentives":
             if "lqty_amount" in data.columns:
                 data.rename(columns={"lqty_amount": "lqty_issued"}, inplace=True)
             plot_rewards_vs_date(data, network_name, selected_category)
-            st.write("Data Preview (Scrollable and Full Width):")
+            st.write("Data Preview:")
             st.dataframe(data, height=400, use_container_width=True)
         except FileNotFoundError:
             st.error(f"CSV file for {network_name} not found at {csv_file_path}. Please ensure the file exists.")
@@ -181,7 +181,7 @@ elif selected_category == "Staking Revenue":
             if "cumulative_fees" in data.columns:
                 data.rename(columns={"cumulative_fees": "usd_rewards"}, inplace=True)
             plot_rewards_vs_date(data, network_name, selected_category)
-            st.write("Data Preview (Scrollable and Full Width):")
+            st.write("Data Preview:")
             st.dataframe(data, height=400, use_container_width=True)
         except FileNotFoundError:
             st.error(f"CSV file for {network_name} not found at {csv_file_path}. Please ensure the file exists.")
@@ -226,7 +226,7 @@ elif selected_category == "Redemption Staking Revenue":
             plot_rewards_vs_date(data, network_name, selected_category)
     
             # Show data
-            st.write("Data Preview (Scrollable and Full Width):")
+            st.write("Data Preview:")
             st.dataframe(data, height=400, use_container_width=True)
         except FileNotFoundError:
             st.error(f"CSV file for {network_name} not found at {csv_file_path}. Please ensure the file exists.")
