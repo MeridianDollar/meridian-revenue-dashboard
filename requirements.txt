@@ -5,3 +5,7 @@ Requests==2.32.3
 streamlit==1.41.1
 web3==5.25.0
 yfinance==0.2.51
+setuptools>=65.5.1
+wheel>=0.38.0
+distutils
+--upgrade pip
